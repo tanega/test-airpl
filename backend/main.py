@@ -1,12 +1,26 @@
+import os
 from datetime import date
 from typing import Literal
 
+from dotenv import load_dotenv
 from fastapi import FastAPI, Query
+from fastapi.middleware.cors import CORSMiddleware
 
 from db import con
 from models import IndicePage
 
+load_dotenv()
+
+ALLOW_ORIGINS = os.environ.get("ALLOW_ORIGINS", "http://localhost:5173").split(",")
+
 app = FastAPI(title="AIRPL REST API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=ALLOW_ORIGINS,
+    allow_methods=["GET"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/indices", response_model=IndicePage)
